@@ -5,17 +5,40 @@ const NuevaImagenPage = () => {
   const [imagenPreview, setImagenPreview] = useState(null);
   const [error, setError] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (imagen && imagen.size > 15 * 1024 * 1024) {
+    if (!imagen) {
+      setError('Por favor, selecciona una imagen.');
+      return;
+    }
+
+    if (imagen.size > 15 * 1024 * 1024) {
       setError('La imagen no debe pesar más de 15 megas.');
       return;
     }
 
-    // Resto del código para enviar la imagen al servidor
-    console.log('Imagen seleccionada:', imagen);
-    setError('');
+    try {
+      const formData = new FormData();
+      formData.append('title', event.target.title.value);
+      formData.append('imagen', imagen);
+
+      const response = await fetch('http://localhost:5005/api/images', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al enviar la imagen al servidor.');
+      }
+
+      // Resto del código si la respuesta es exitosa
+      console.log('Imagen enviada con éxito al servidor.');
+      setError('');
+    } catch (error) {
+      setError('Error al enviar la imagen al servidor.');
+    }
   };
 
   const handleImagenChange = (event) => {

@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const Image = require('../models/Image.model');
 
-router.post('/images', async (req, res) => {
+router.post('/api/images', async (req, res) => {
+  console.log('Solicitud POST a /api/images recibida');
   const { title } = req.body;
 
   const imageData = {

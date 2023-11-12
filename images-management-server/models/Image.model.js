@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-const imgSchema = new Schema({
+const imageSchema = new Schema({
   title: String,
   image: {
     data: Buffer,
@@ -9,4 +9,4 @@ const imgSchema = new Schema({
   }
 });
 
-module.exports = model('Image', imgSchema);
+module.exports = model('Image', imageSchema);
