@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 });
 
 // Ruta para obtener una imagen por su ID
-router.get('/api/images/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -49,6 +49,43 @@ router.get('/api/images/:id', async (req, res) => {
     res.json(image);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.delete('/:id', async (req, res) => {
+  const imageId = req.params.id;
+  console.log('ojo');
+  try {
+    const deletedImage = await Image.findByIdAndDelete(imageId);
+
+    if (!deletedImage) {
+      return res.status(404).json({ error: 'Image not found' });
+    }
+
+    res.json(deletedImage);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  const { title } = req.body;
+
+  try {
+    const updatedImage = await Image.findByIdAndUpdate(
+      req.params.id,
+      { title },
+      { new: true }
+    );
+
+    if (!updatedImage) {
+      return res.status(404).json({ error: 'Imagen no encontrada' });
+    }
+
+    res.json(updatedImage);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 

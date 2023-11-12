@@ -26,8 +26,7 @@ const NuevaImagenPage = () => {
 
       const response = await fetch('http://localhost:5005/api/images', {
         method: 'POST',
-        body: formData,
-        credentials: 'include'
+        body: formData
       });
 
       if (!response.ok) {
