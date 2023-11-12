@@ -7,6 +7,7 @@ const NuevaImagenPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log('Manejando envío de formulario');
 
     if (!imagen) {
       setError('Por favor, selecciona una imagen.');
@@ -38,11 +39,16 @@ const NuevaImagenPage = () => {
       setError('');
     } catch (error) {
       setError('Error al enviar la imagen al servidor.');
+      console.error('Error al enviar la imagen al servidor:', error);
+      console.log('Error message:', error.message);
+      console.log('Error stack:', error.stack);
+      setError('Error al enviar la imagen al servidor.');
     }
   };
 
   const handleImagenChange = (event) => {
     const nuevaImagen = event.target.files[0];
+    console.log('Manejando cambio de imagen');
 
     if (nuevaImagen && nuevaImagen.size > 15 * 1024 * 1024) {
       setError('La imagen no debe pesar más de 15 megas.');
