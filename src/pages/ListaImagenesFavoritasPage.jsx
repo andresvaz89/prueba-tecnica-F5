@@ -94,7 +94,7 @@ const ImagenesFavoritas = () => {
       <h3>Lista de imágenes</h3>
       {imagenes.map((imagen) => (
         <div key={imagen._id} style={{ marginBottom: '20px' }}>
-          <p>Nombre: {imagen.title}</p>
+          <p>Título: {imagen.title}</p>
           <img
             src={`data:${imagen.image.contentType};base64,${arrayBufferToBase64(
               imagen.image.data.data
@@ -117,13 +117,17 @@ const ImagenesFavoritas = () => {
               }
             }}
           >
-            <label>Editar Nombre:</label>
+            <label>Editar título:</label>
             <input type="text" name="title" defaultValue={imagen.title} />
-            <label>Editar Imagen:</label>
+            <label>Editar imagen:</label>
             <input type="file" name="imagen" accept="image/*" />
-            <button type="submit">Guardar</button>
+            <button type="submit">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
           </form>
-          <button onClick={() => handleDeleteClick(imagen._id)}>Borrar</button>
+          <button onClick={() => handleDeleteClick(imagen._id)}>
+            <ion-icon size="large" name="trash-outline"></ion-icon>
+          </button>
         </div>
       ))}
     </div>
