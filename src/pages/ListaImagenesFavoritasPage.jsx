@@ -8,6 +8,7 @@ function arrayBufferToBase64(arrayBuffer) {
   }
   return btoa(binaryString);
 }
+
 const ImagenesFavoritas = () => {
   const [imagenes, setImagenes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,6 +54,33 @@ const ImagenesFavoritas = () => {
     }
   };
 
+  const handleEditSubmit = async (id, editedTitle, editedImage) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', editedTitle);
+      formData.append('imagen', editedImage);
+
+      const response = await fetch(`http://localhost:5005/api/images/${id}`, {
+        method: 'PATCH',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al editar la imagen en el servidor.');
+      }
+
+      // Actualizar el estado con el nombre editado
+      setImagenes((prevImagenes) =>
+        prevImagenes.map((imagen) =>
+          imagen._id === id ? { ...imagen, title: editedTitle } : imagen
+        )
+      );
+    } catch (error) {
+      console.error(error);
+      setError('Error al editar la imagen en el servidor.');
+    }
+  };
+
   if (loading) {
     return <p>Cargando imágenes...</p>;
   }
@@ -66,6 +94,7 @@ const ImagenesFavoritas = () => {
       <h3>Lista de imágenes</h3>
       {imagenes.map((imagen) => (
         <div key={imagen._id} style={{ marginBottom: '20px' }}>
+          <p>Nombre: {imagen.title}</p>
           <img
             src={`data:${imagen.image.contentType};base64,${arrayBufferToBase64(
               imagen.image.data.data
@@ -77,6 +106,23 @@ const ImagenesFavoritas = () => {
               marginBottom: '10px'
             }}
           />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const editedTitle = e.target.title.value;
+              const editedImage = e.target.imagen.files[0];
+
+              if (editedTitle.trim() || editedImage) {
+                handleEditSubmit(imagen._id, editedTitle, editedImage);
+              }
+            }}
+          >
+            <label>Editar Nombre:</label>
+            <input type="text" name="title" defaultValue={imagen.title} />
+            <label>Editar Imagen:</label>
+            <input type="file" name="imagen" accept="image/*" />
+            <button type="submit">Guardar</button>
+          </form>
           <button onClick={() => handleDeleteClick(imagen._id)}>Borrar</button>
         </div>
       ))}

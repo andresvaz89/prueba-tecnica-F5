@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NuevaImagenPage = () => {
   const [imagen, setImagen] = useState(null);
   const [imagenPreview, setImagenPreview] = useState(null);
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Obtener la función de navegación
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,6 +38,9 @@ const NuevaImagenPage = () => {
       // Resto del código si la respuesta es exitosa
       console.log('Imagen enviada con éxito al servidor.');
       setError('');
+
+      // Navegar a ListaImagenesFavoritasPage.jsx después de cargar la imagen
+      navigate('/');
     } catch (error) {
       setError('Error al enviar la imagen al servidor.');
       console.error('Error al enviar la imagen al servidor:', error);

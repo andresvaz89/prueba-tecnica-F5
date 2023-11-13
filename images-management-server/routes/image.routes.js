@@ -1,12 +1,11 @@
 const router = require('express').Router();
 const Image = require('../models/Image.model');
 const multer = require('multer');
-const upload = multer().single('imagen'); // Asegúrate de que 'imagen' coincida con el nombre del campo en tu formulario
+const upload = multer().single('imagen');
 
 router.post('/', upload, async (req, res) => {
   console.log('Solicitud POST a /api/images recibida');
 
-  // Aquí deberías poder acceder a req.file
   if (!req.file) {
     return res
       .status(400)
@@ -37,7 +36,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Ruta para obtener una imagen por su ID
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -54,7 +52,7 @@ router.get('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const imageId = req.params.id;
-  console.log('ojo');
+
   try {
     const deletedImage = await Image.findByIdAndDelete(imageId);
 
@@ -68,13 +66,21 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.patch('/:id', upload, async (req, res) => {
   const { title } = req.body;
 
   try {
+    let imageData = {};
+    if (req.file) {
+      imageData = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype
+      };
+    }
+
     const updatedImage = await Image.findByIdAndUpdate(
       req.params.id,
-      { title },
+      { title, image: imageData },
       { new: true }
     );
 
